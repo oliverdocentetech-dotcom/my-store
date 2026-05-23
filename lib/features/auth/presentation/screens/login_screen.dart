@@ -1,20 +1,34 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:store_demo_class/common/image_assets/image_assets.dart';
 import 'package:store_demo_class/common/widgets/buttons/primary_button.dart';
+import 'package:store_demo_class/common/widgets/screens/loading_screen.dart';
 import 'package:store_demo_class/common/widgets/text_fields/primary_text_field.dart';
 import 'package:store_demo_class/features/auth/presentation/screens/register_screen.dart';
+import 'package:store_demo_class/features/home/presentation/screens/home_screen.dart';
 import 'package:store_demo_class/styles/app_colors.dart';
 import 'package:store_demo_class/styles/text_styles.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+
+  bool isLoading = false;
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
 
-    final emailController = TextEditingController();
-    final passwordController = TextEditingController();
+    if(isLoading) {
+      return LoadingScreen();
+    }
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -50,7 +64,15 @@ class LoginScreen extends StatelessWidget {
               SizedBox(height: 24,),
               PrimaryButton(
                   onTap: () {
-
+                    if(emailController.text.isEmpty){
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('El correo no puede estar vacío')));
+                      return;
+                    }
+                    if(passwordController.text.isEmpty){
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('La contraseña no puede estar vacía')));
+                      return;
+                    }
+                    loginUserWithEmailAndPassword();
                   },
                   text: 'INGRESAR'),
               Spacer(),
@@ -66,5 +88,23 @@ class LoginScreen extends StatelessWidget {
         ),
       )
     );
+  }
+
+  Future<void> loginUserWithEmailAndPassword() async {
+    setState(() {
+      isLoading = true;
+    });
+    try{
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    } on FirebaseAuthException catch(e) {
+      SnackBar snackBar = SnackBar(content: Text(e.message ?? 'Error al ingresar'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 }

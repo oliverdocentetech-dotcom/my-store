@@ -8,12 +8,14 @@ class PrimaryTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool isPassword;
   final TextEditingController controller;
+  final IconData? suffixIcon;
   const PrimaryTextField({super.key,
     required this.hintText,
     required this.labelText,
     this.keyboardType,
     this.isPassword = false,
-    required this.controller
+    required this.controller,
+    this.suffixIcon
   });
 
   @override
@@ -30,6 +32,7 @@ class PrimaryTextField extends StatelessWidget {
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           hint: Text(hintText, style: AppTextStyles.textHintStyle,),
           label: Text(labelText, style: AppTextStyles.textLabelStyle,),
+          suffixIcon: suffixIcon != null ? Icon(suffixIcon, color: AppColors.neutralColor,) : null,
         ),
         style: AppTextStyles.textFieldStyle,
         keyboardType: keyboardType,
