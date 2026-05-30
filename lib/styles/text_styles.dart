@@ -45,4 +45,10 @@ class AppTextStyles {
       fontWeight: FontWeight.w700,
       color: AppColors.secondaryColor
   );
+
+  static final TextStyle textCategoryStyle = TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      color: AppColors.backgroundColor
+  );
 }
