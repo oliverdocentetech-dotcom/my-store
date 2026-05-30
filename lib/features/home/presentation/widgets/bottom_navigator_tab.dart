@@ -7,29 +7,35 @@ class BottomNavigatorTab extends StatelessWidget {
   final String title;
   final String iconPath;
   final bool isSelected;
+  final VoidCallback? onTap;
   const BottomNavigatorTab({super.key,
     required this.title,
     required this.iconPath,
-    this.isSelected = false
+    this.isSelected = false,
+    this.onTap
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      spacing: 4,
-      children: [
-        SvgPicture.asset(
-            iconPath,
-          colorFilter: ColorFilter.mode(isSelected ? AppColors.backgroundColor : AppColors.secondaryColor, BlendMode.srcIn),
-        ),
-        Text(
-          title,
-          style: AppTextStyles.textDescriptionStyle.copyWith(
-            color: isSelected ? AppColors.backgroundColor : AppColors.secondaryColor
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 4,
+        children: [
+          SvgPicture.asset(
+              iconPath,
+            colorFilter: ColorFilter.mode(isSelected ? AppColors.backgroundColor : AppColors.secondaryColor, BlendMode.srcIn),
+          ),
+          Text(
+            title,
+            style: AppTextStyles.textDescriptionStyle.copyWith(
+              color: isSelected ? AppColors.backgroundColor : AppColors.secondaryColor
+            )
           )
-        )
-      ],
+        ],
+      ),
     );
   }
 }
